@@ -1,57 +1,61 @@
-import { plantList } from "../datas/plantList";
-import '../styles/ShoppingList.css';
-// import CareScale from './CareScale';
-import PlantItem from './PlantItem';
-// const plantList : Array<string> = [
-//     'monstera',
-//     'ficus lyrata',
-//     'pothos argenté',
-//     'yucca',
-//     'palmier'
-// ]
-// function ShoppingList():any {
-//     return (
-//         <ul>
-//             {plantList.map((plant, index) => (
-//                 <li key={`${plant}-${index}`}>{plant}</li>
-//             ))}
-//         </ul>
-//     )
-// }
+import { plantList } from '../datas/plantList'
+import PlantItem from './PlantItem'
+import '../styles/ShoppingList.css'
+import Categories from './Categories'
+import { useState } from 'react'
 
-function ShoppingList(): JSX.Element {
-	const categories = plantList.reduce(
-		(acc : any[], plant : any) =>
+type cartState = {
+  cart: any,
+  updateCart : any,
+};
+
+function ShoppingList({ cart, updateCart }:cartState) {
+	const [activeCategory, setActiveCategory] = useState('')
+	const categories: any = plantList.reduce(
+		(acc:any, plant:any) =>
 			acc.includes(plant.category) ? acc : acc.concat(plant.category),
 		[]
 	)
-	
+	function addToCart(name:string, price:number) {
+		const currentPlantSaved: any = cart.find((plant:any) => plant.name === name)
+		if (currentPlantSaved) {
+			const cartFilteredCurrentPlant : any = cart.filter(
+				(plant:any) => plant.name !== name
+			)
+			console.log(cartFilteredCurrentPlant);
+			updateCart([
+				...cartFilteredCurrentPlant,
+				{ name, price, amount: currentPlantSaved.amount + 1 }
+			])
+		
+		} else {
+			updateCart([...cart, { name, price, amount: 1 }])
+		}
+	}
+
 	return (
-		<div>
-			<ul>
-				{categories.map((cat : any) => (
-					<li key={cat}>{cat}</li>
-				))}
-			</ul>
+		<div className='lmj-shopping-list'>
+			<Categories
+				categories={categories}
+				setActiveCategory={setActiveCategory}
+				activeCategory={activeCategory}
+			/>
+
 			<ul className='lmj-plant-list'>
-			{plantList.map(({ id, cover, name, water, light }) => (
-					<PlantItem
-						key ={id}
-						cover={cover}
-						name={name}
-						water={water}
-						light={light}
-					/>
-				))}
-				{/* {plantList.map((plant : any) => (
-					<li key={plant.id} className='lmj-plant-item'>
-						{plant.name}
-                        {plant.isSpecialOffer && <div className="lmj-sales">Solde</div>}
-                        <CareScale careType='water' scaleValue={plant.water} />
-                        <CareScale careType='light' scaleValue={plant.light} />
-						<PlantItem plantName={plant.name} plantCover={plant.image} plantId={plant.id}/>
-					</li>
-				))} */}
+				{plantList.map(({ id, cover, name, water, light, price, category }) =>
+					!activeCategory || activeCategory === category ? (
+						<div key={id}>
+							<PlantItem
+								cover={cover}
+								name={name}
+								water={water}
+								light={light}
+								price={price}
+							/>
+							<button onClick={() => addToCart(name, price)}>Ajouter</button>
+						</div>
+					) : null
+				)}
 			</ul>
 		</div>
 	)

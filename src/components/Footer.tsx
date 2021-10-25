@@ -8,7 +8,7 @@ export interface stateFooter {
   }
   
 function Footer() :JSX.Element {
-	const [inputValue, setInputValue] = useState("");
+	const [inputValue, setInputValue] = useState<string>("");
 
 	return (
 		<footer className='lmj-footer'>

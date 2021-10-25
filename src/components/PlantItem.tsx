@@ -1,49 +1,30 @@
-import CareScale from "./CareScale";
-import '../styles/PlantItem.css';
+import CareScale from './CareScale'
+import '../styles/PlantItem.css'
 
 
-type plantItemprops = {
+type plantItemState = {
     cover: string,
     name : string,
     water : number,
     light : number,
+    price : number,
   };
-function PlantItem({ cover, name, water, light }:plantItemprops):JSX.Element{
-
-
-
+  
+function PlantItem({ cover, name, water, light, price }:plantItemState) {
 	return (
-            <li className='lmj-plant-item'>
-                <img src={cover} alt={name} className='lmj-plant-item-cover'/>{name}
-                <div>
-                    {/* <div onClick={() => alert(infoCareScale(water, 'eau'))}> */}
-                    <CareScale careType='water' scaleValue={water} />
-                    {/* </div> */}
-                    {/* <div onClick={() => alert(infoCareScale(light, 'lumière'))}> */}
-                    <CareScale careType='light' scaleValue={light} />
-                    {/* </div> */}
-                </div>
-            </li>
+		<li className='lmj-plant-item' onClick={() => handleClick}>
+			<span className='lmj-plant-item-price'>{price}€</span>
+			<img className='lmj-plant-item-cover' src={cover} alt={`${name} cover`} />
+			{name}
+			<div>
+				<CareScale careType='water' scaleValue={water} />
+				<CareScale careType='light' scaleValue={light} />
+			</div>
+		</li>
 	)
 }
-// function infoCareScale(value:number, type:string):string{
-
-//     let message : string = "";
-
-//     switch(value){
-//         case 1:
-//             return message = "Peu "+type;
-//             break;
-//         case 2:
-//             return message = "modérement "+type;
-//             break;
-//         case 3:
-//             return message = "Beaucoup "+type;
-//             break;
-//         default:
-//             return message = "Pas d'info "+type
-//     }
-
-// }
+function handleClick(plantName:string) {
+	alert(`Vous voulez acheter 1 ${plantName}? Très bon choix 🌱✨`)
+}
 
 export default PlantItem
